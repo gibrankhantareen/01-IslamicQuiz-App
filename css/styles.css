@@ -2,24 +2,30 @@ body {
     background-color: #f0e6d6;
     font-family: 'Arial', sans-serif;
     text-align: center;
+    padding-top: 60px; /* Padding to avoid overlap with the top bar */
 }
 
-#points-bar {
+#top-bar {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
     background-color: #8c6239;
     color: white;
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
-#sign-in-screen {
-    display: none; /* Initially hidden */
-    /* Add other styling as needed */
+#points-bar {
+    padding: 10px;
 }
 
-#home-screen img {
-    width: 200px;
+#welcome-message {
+    background-color: #d4b483;
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 2%;
 }
 
 button {
@@ -29,4 +35,10 @@ button {
     margin: 10px;
     cursor: pointer;
     font-size: 18px;
+}
+
+@media screen and (max-width: 600px) {
+    button {
+        width: 90%;
+    }
 }
