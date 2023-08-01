@@ -2,7 +2,6 @@ body {
     background-color: #f0e6d6;
     font-family: 'Arial', sans-serif;
     text-align: center;
-    padding-top: 60px; /* Padding to avoid overlap with the top bar */
 }
 
 #top-bar {
@@ -15,17 +14,26 @@ body {
     padding: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 #points-bar {
     padding: 10px;
 }
 
+#back-button, #home-button {
+    background-color: #d4b483;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+}
+
 #welcome-message {
     background-color: #d4b483;
     padding: 10px;
     border-radius: 5px;
-    margin-right: 2%;
 }
 
 button {
@@ -35,6 +43,10 @@ button {
     margin: 10px;
     cursor: pointer;
     font-size: 18px;
+}
+
+#main-buttons {
+    margin-top: 60px; /* Adjusted margin to avoid overlap with top bar */
 }
 
 @media screen and (max-width: 600px) {
