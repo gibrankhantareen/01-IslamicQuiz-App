@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Quiz</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+    <script src="../js/app.js"></script>
+</head>
+<body>
+    <div id="points-bar"></div> <!-- Moved outside of other divs -->
+    <div id="sign-in-screen">
+        <button onclick="signInWithGoogle()">Sign In with Google</button>
+    </div>
+    <div id="home-screen" style="display: none;">
+        <div id="top-bar">
+            <span id="user-name"></span>
+        </div>
+        <button onclick="startQuiz()">Start Quiz</button>
+        <button onclick="showPreviousResults()">Previous Results</button>
+        <button onclick="redeemPoints()">Redeem Points</button>
+        <button onclick="signInToSync()">Sign in to Sync Progress</button>
+    </div>
+    <div id="quiz-level-screen" style="display: none;">
+        <button onclick="startLevel('Beginner')">Beginner</button>
+        <button onclick="startLevel('Normal')">Normal</button>
+        <button onclick="startLevel('Medium')">Medium</button>
+        <button onclick="startLevel('Hard')">Hard</button>
+    </div>
+    <div id="quiz-screen" style="display: none;">
+        <div id="question"></div>
+        <button id="option-0" onclick="checkAnswer(0)"></button>
+        <button id="option-1" onclick="checkAnswer(1)"></button>
+        <button id="option-2" onclick="checkAnswer(2)"></button>
+        <button id="option-3" onclick="checkAnswer(3)"></button>
+        <div id="feedback"></div>
+    </div>
+</body>
+</html>

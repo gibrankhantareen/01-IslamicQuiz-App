@@ -1,0 +1,32 @@
+body {
+    background-color: #f0e6d6;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+#points-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #8c6239;
+    color: white;
+    padding: 10px;
+}
+
+#sign-in-screen {
+    display: none; /* Initially hidden */
+    /* Add other styling as needed */
+}
+
+#home-screen img {
+    width: 200px;
+}
+
+button {
+    background-color: #d4b483;
+    border: none;
+    padding: 15px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 18px;
+}
