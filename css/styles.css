@@ -15,6 +15,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 #points-bar {
@@ -30,10 +31,15 @@ body {
     margin: 0 5px;
 }
 
+#content {
+    margin-top: 60px; /* Adjusted margin to avoid overlap with top bar */
+}
+
 #welcome-message {
     background-color: #d4b483;
     padding: 10px;
     border-radius: 5px;
+    margin-right: 2%;
 }
 
 button {
@@ -43,6 +49,15 @@ button {
     margin: 10px;
     cursor: pointer;
     font-size: 18px;
+}
+
+#back-button, #home-button {
+    background-color: #d4b483;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
 }
 
 #main-buttons {

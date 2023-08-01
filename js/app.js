@@ -1,3 +1,4 @@
+// Firebase Configuration
 var firebaseConfig = {
     apiKey: "AIzaSyDZhNF_mEaRlwNo1qnVFzfv3W3M4Cv6ej4",
     authDomain: "islamquiz-d8ce0.firebaseapp.com",
@@ -12,9 +13,11 @@ firebase.initializeApp(firebaseConfig);
 var provider = new firebase.auth.GoogleAuthProvider();
 var points = 0;
 
+
 function signInWithGoogle() {
     firebase.auth().signInWithRedirect(provider);
 }
+
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
@@ -46,17 +49,47 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
 
+var previousScreens = [];
+
+
+function goBack() {
+    var lastScreen = previousScreens.pop();
+    if (lastScreen) {
+        // Hide all screens
+        document.getElementById('home-screen').style.display = 'none';
+        document.getElementById('quiz-level-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('previous-results-screen').style.display = 'none';
+
+        // Show the last screen
+        document.getElementById(lastScreen).style.display = 'block';
+    }
+}
+
+
+function goHome() {
+    document.getElementById('home-screen').style.display = 'block';
+    document.getElementById('quiz-level-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('previous-results-screen').style.display = 'none';
+}
+
+
 function startQuiz() {
+    previousScreens.push('home-screen');
     document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-buttons').style.display = 'none';
     document.getElementById('quiz-level-screen').style.display = 'block';
 }
 
+
 function startLevel(level) {
+    previousScreens.push('quiz-level-screen');
     document.getElementById('quiz-level-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display = 'block';
+    document.getElementById('current-level').value = level; // Set the current level
     loadQuestion(level);
 }
+
 
 var currentQuestionIndex = 0;
 
@@ -66,17 +99,17 @@ var questions = {
         { question: 'What is the holy book of Islam?', options: ['Bible', 'Quran', 'Torah', 'Vedas'], correctAnswer: 1 },
         { question: 'Who is the last prophet in Islam?', options: ['Adam', 'Moses', 'Jesus', 'Muhammad'], correctAnswer: 3 },
     ],
-    'Normal': [
-        { question: 'What is the Islamic term for fasting?', options: ['Salah', 'Sawm', 'Zakat', 'Hajj'], correctAnswer: 1 },
-        { question: 'Which angel revealed the Quran to Muhammad?', options: ['Michael', 'Gabriel', 'Raphael', 'Uriel'], correctAnswer: 1 },
-    ],
+
     'Medium': [
-        { question: 'What is the minimum amount of wealth required for Zakat?', options: ['Nisab', 'Riba', 'Fidya', 'Kaffara'], correctAnswer: 0 },
-        { question: 'Which battle was fought in Ramadan in the 2nd year of Hijra?', options: ['Uhud', 'Badr', 'Khandaq', 'Tabuk'], correctAnswer: 1 },
+        { question: 'What is the Islamic term for the moral responsibility of a person?', options: ['Taqwa', 'Amanah', 'Fitrah', 'Ibadah'], correctAnswer: 1 },
+        { question: 'Which Surah of the Quran is known as the Heart of the Quran?', options: ['Surah Al-Fatiha', 'Surah Al-Ikhlas', 'Surah Ya-Sin', 'Surah Al-Mulk'], correctAnswer: 2 },
+        // ... More Medium Questions ...
     ],
+
     'Hard': [
-        { question: 'What is the name of the treaty that was signed between the Muslims and the Quraysh?', options: ['Treaty of Hudaybiyyah', 'Treaty of Taif', 'Treaty of Medina', 'Treaty of Mecca'], correctAnswer: 0 },
-        { question: 'Which companion was given the title "Sword of Allah"?', options: ['Umar ibn al-Khattab', 'Ali ibn Abi Talib', 'Khalid ibn al-Walid', 'Abu Bakr al-Siddiq'], correctAnswer: 2 },
+        { question: 'Who was the first martyr in Islam?', options: ['Hamza ibn Abdul-Muttalib', 'Bilal ibn Rabah', 'Sumayyah bint Khayyat', 'Uthman ibn Affan'], correctAnswer: 2 },
+        { question: 'What is the name of the spring in Paradise from which rivers flow?', options: ['Kawthar', 'Salsabil', 'Tasneem', 'Zamzam'], correctAnswer: 0 },
+        // ... More Hard Questions ...
     ]
 };
 
@@ -104,19 +137,42 @@ function loadQuestion(level) {
     }
 }
 
-function checkAnswer(selectedOption) {
-    var level = 'Beginner'; // Update this based on the selected level
-    var correctAnswer = questions[level][currentQuestionIndex].correctAnswer;
+function resetProgress() {
     var userId = firebase.auth().currentUser.uid;
+    var userName = firebase.auth().currentUser.displayName;
 
-    firebase.database().ref('users/' + userId).once('value').then(function(snapshot) {
-        var userData = snapshot.val();
+    // Reset the user's data in Firebase
+    firebase.database().ref('users/' + userId).set({
+        username: userName,
+        points: 0,
+        highScore: 0,
+        highScoreDate: ''
+    });
 
-        if (points > userData.highScore) {
-            firebase.database().ref('users/' + userId).update({
-                highScore: points,
-                highScoreDate: new Date().toLocaleDateString()
-            });
+    // Remove the user's answered questions
+    firebase.database().ref('users/' + userId + '/questions').remove();
+
+    // Reset the local points variable
+    points = 0;
+
+    // Update the points bar
+    document.getElementById('points-bar').innerText = 'Points: 0';
+
+    // Optionally, you can navigate the user to a different screen or show a confirmation message
+    alert('Your progress has been reset.');
+}
+
+
+function checkAnswer(selectedOption) {
+    var level = document.getElementById('current-level').value; // Get the current level
+    var questionId = currentQuestionIndex; // Unique question ID
+    var userId = firebase.auth().currentUser.uid;
+    var correctAnswer = questions[level][currentQuestionIndex].correctAnswer;
+
+    firebase.database().ref('users/' + userId + '/questions/' + questionId).once('value').then(function(snapshot) {
+        if (snapshot.exists()) {
+            // Question already answered, do not award points
+            return;
         }
 
         if (selectedOption === correctAnswer) {
@@ -124,6 +180,8 @@ function checkAnswer(selectedOption) {
             firebase.database().ref('users/' + userId).update({
                 points: points
             });
+            // Record the question as answered
+            firebase.database().ref('users/' + userId + '/questions/' + questionId).set(true);
             document.getElementById('feedback').innerText = 'Correct! +5 points';
             document.getElementById('feedback').style.color = 'green';
         } else {
